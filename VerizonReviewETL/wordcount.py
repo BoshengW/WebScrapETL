@@ -1,5 +1,3 @@
-import pyspark
-import time
 from pyspark.sql import*
 from pyspark import SparkContext, SparkConf
 from datetime import datetime
@@ -43,14 +41,14 @@ if file_Available == "Yes":
         .filter(length('Keywords') > 3) \
         .sort('count', ascending=False) \
         .withColumn('Date', lit(date.today().strftime("%m/%d/%y"))) \
-        .take(250)
+        .limit(250)
 
     ## load into Hive
     tblList = sqlContext.tableNames(schemaName)
     if tableName in tblList:
         print("Table exists")
         # insert code to insert/append
-        wordCountDF.na.fill("").write.format('parquet').insertInto(schemaName + "." + tableName, overwrite=False)
+        wordCountDF.na.fill("").write.mode('append').format('parquet').saveAsTable(schemaName + "." + tableName)
     else:
         print("Table does not Exist")
         # insert code to create

@@ -1,16 +1,12 @@
 from selenium import webdriver
-from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.action_chains import ActionChains
 import time
-import csv
 from datetime import datetime
 import os
 
 from bs4 import BeautifulSoup
 from requests import get
-import pandas as pd
 
-from io import TextIOWrapper
 from hdfs.client import Client
 
 
@@ -61,8 +57,7 @@ def webScrapVerizon(browser, maxPage, webPageHTMLText, reviewMap, config):
     return reviewMap
 
 def loadToHDFS(output_path, filename ,hdfsConnect, reviewDF):
-    with hdfsConnect.write(os.path.join(output_path, filename),
-              encoding='utf-8') as writer:
+    with hdfsConnect.write(os.path.join(output_path, filename), encoding='utf-8') as writer:
         reviewDF.to_csv(writer)
 
 
@@ -98,7 +93,7 @@ browser = webdriver.Chrome(executable_path='D:/Verizon/chromedriver.exe')
 browser.get(config["verizonUrl"])
 
 ## for current verizon webpage maxPage only 17
-reviewScrapMap = webScrapVerizon(browser, 1000, webPageHTMLText, reviewMap, config)
+reviewScrapMap = webScrapVerizon(browser, 17, webPageHTMLText, reviewMap, config)
 
 
 ## connect hdfs to saving
